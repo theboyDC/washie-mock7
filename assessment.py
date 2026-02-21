@@ -10,7 +10,17 @@ def clean_and_format_data(raw_data):
     :param raw_data: List of tuples (str, val)
     :return: List of dicts {'id': str, 'weight': float}
     """
-    pass
+    results = []
+    for data in raw_data:
+        weight = float(data[1])
+        if weight >= 0:  # Only add if it's positive
+            results.append({"id": str(data[0]).strip(), "weight": weight})
+        # If negative, we just skip it (Filtering)
+    return results
+ 
+
+
+
 
 def get_total_weight_recursive(manifest):
     """
@@ -25,7 +35,23 @@ def get_total_weight_recursive(manifest):
     :param manifest: List[Union[float, list]]
     :return: float (total weight)
     """
-    pass
+    total = 0.0
+    if manifest == []:
+        return 0.0
+    else:
+        total = 0.0
+        for item in manifest:
+            if type(item) == list:
+                total += get_total_weight_recursive(item)
+            else:
+                total += float(item)
+                
+    return total
+manifest = [10.5, [5.0, [2.0], 3.0], 1.0]
+print(get_total_weight_recursive(manifest))
+
+
+
 
 def generate_shipping_label(package_id, weight, destination):
     """
@@ -40,4 +66,7 @@ def generate_shipping_label(package_id, weight, destination):
     :param destination: str
     :return: str
     """
-    pass
+    weight = round(weight, 2)
+    if weight == 0:
+        return f"ID: {package_id} | Weight: 0.00kg | Dest: {destination}"
+    return f"ID: {package_id} | Weight: {weight}kg | Dest: {destination}"
